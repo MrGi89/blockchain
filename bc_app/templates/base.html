@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% load static %}
+    {% load extra_tags %}
+</head>
+<body>
+<form action="#" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="send">
+</form>
+<p>1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2</p>
+{% if address %}
+    <h3>Summary:</h3>
+    <img src="{% static 'QRcode.png' %}">
+    <p>Address: {{ address.address }}</p>
+    <p>Hash 160: {{ address.hash160 }}</p>
+    <p>Transactions: {{ address.n_tx }}</p>
+    <p>Total received: {{ address.total_received | currency }} BTC</p>
+    <p>Total sent: {{ address.total_sent | currency }} BTC</p>
+    <p>Final balance: {{ address.final_balance | currency }} BTC</p>
+    <h3>Transactions:</h3>
+    <hr>
+    Liczba transakcji: {{ transactions.count }}
+
+    {% for transaction in transactions %}
+        <pre>
+            Block height: {{ transaction.block_height }}
+            Double spend: {{ transaction.double_spend }}
+            Hash: {{ transaction.hash }}
+            Relayed by: {{ transaction.relayed_by }}
+            Size: {{ transaction.size }}
+            Time: {{ transaction.time | time }}
+            Tx index: {{ transaction.tx_index }}
+            Version: {{ transaction.version }}
+            Inputs:
+            {% for input in transaction.inputs %}
+                {% for key, val in input.items %}
+                    {{ key }}: {{ val }}
+                {% endfor %}
+            {% endfor %}
+            Outputs:
+            {% for output in transaction.outputs %}
+                {% for key, val in output.items %}
+                    {{ key }}: {{ val }}
+                {% endfor %}
+            {% endfor %}
+        </pre>
+        <hr>
+    {% endfor %}
+{% endif %}
+</body>
+</html>
